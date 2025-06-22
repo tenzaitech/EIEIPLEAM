@@ -1,264 +1,216 @@
 #!/usr/bin/env node
 
-const TenzaiMasterToolkit = require('./master-toolkit');
-const readline = require('readline');
-
 /**
- * 🎯 TENZAI Purchasing System - Enhanced CLI Interface
- * อิงจาก Odoo 18.0 Documentation: https://www.odoo.com/documentation/18.0/
+ * 🚀 TENZAI CLI - Command Line Interface
+ * สำหรับจัดการ TENZAI Purchasing System
+ * 
+ * Usage:
+ * node tenzai-cli.js [command] [options]
+ * 
+ * Commands:
+ * - status: ตรวจสอบสถานะระบบ
+ * - test: ทดสอบการเชื่อมต่อ
+ * - crud: ทดสอบ CRUD operations
+ * - validation: ทดสอบ field validation
+ * - performance: ทดสอบ performance
+ * - permissions: จัดการสิทธิ์
+ * - user-roles: จัดการ user roles
+ * - create-groups: สร้าง TENZAI groups
+ * - assign-user: กำหนดสิทธิ์ให้ user
+ * - full-test: ทดสอบทั้งหมด
  */
 
-class TenzaiCLI {
-  constructor() {
-    this.toolkit = new TenzaiMasterToolkit();
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+const TenzaiMasterToolkit = require('./master-toolkit.js');
+
+async function runCLI() {
+  const command = process.argv[2];
+  const options = process.argv.slice(3);
+
+  console.log('🚀 TENZAI CLI - Command Line Interface');
+  console.log('='.repeat(60));
+
+  if (!command) {
+    showHelp();
+    return;
   }
 
-  // 🎨 Display Banner
-  showBanner() {
-    console.clear();
-    console.log('🎯 TENZAI Purchasing System v2.5');
-    console.log('='.repeat(60));
-    console.log('📚 Based on Odoo 18.0 Documentation');
-    console.log('🔗 https://www.odoo.com/documentation/18.0/');
-    console.log('='.repeat(60));
-    console.log('');
-  }
+  const toolkit = new TenzaiMasterToolkit();
 
-  // 📋 Show Main Menu
-  showMainMenu() {
-    console.log('📋 MAIN MENU - Choose an option:');
-    console.log('');
-    console.log('🔍 SYSTEM MANAGEMENT:');
-    console.log('  1. System Status Check');
-    console.log('  2. Full System Check');
-    console.log('  3. Data Cleanup');
-    console.log('');
-    console.log('🏢 ORGANIZATION:');
-    console.log('  4. Company Management');
-    console.log('  5. User Management');
-    console.log('  6. Module Management');
-    console.log('');
-    console.log('🛒 OPERATIONS:');
-    console.log('  7. Product Management');
-    console.log('  8. Project Management');
-    console.log('  9. Finance & Accounting');
-    console.log('  10. Sales & CRM');
-    console.log('  11. Purchase & Procurement');
-    console.log('  12. Manufacturing');
-    console.log('');
-    console.log('⚙️ TOOLS:');
-    console.log('  13. Quick Commands');
-    console.log('  14. Help & Documentation');
-    console.log('  0. Exit');
-    console.log('');
-  }
+  try {
+    switch (command.toLowerCase()) {
+      case 'status':
+        console.log('🔍 Checking system status...');
+        await toolkit.getSystemStatus();
+        break;
 
-  // 🚀 Run Command
-  async runCommand(command) {
-    try {
-      console.log(`🚀 Executing: ${command}`);
-      console.log('='.repeat(60));
-      
-      const result = await this.toolkit.runCommand(command);
-      
-      console.log('\n✅ Command completed successfully!');
-      return result;
-    } catch (error) {
-      console.error('❌ Command failed:', error.message);
-      return null;
-    }
-  }
+      case 'test':
+        console.log('🧪 Running basic tests...');
+        await toolkit.runFullSystemCheck();
+        break;
 
-  // 🔧 Quick Commands Menu
-  showQuickCommands() {
-    console.log('🔧 QUICK COMMANDS:');
-    console.log('');
-    console.log('📊 Status & Health:');
-    console.log('  status          - System status check');
-    console.log('  full-check      - Complete system analysis');
-    console.log('  cleanup         - Data cleanup & maintenance');
-    console.log('');
-    console.log('🏢 Organization:');
-    console.log('  companies       - Company management');
-    console.log('  users           - User management');
-    console.log('  modules         - Module management');
-    console.log('');
-    console.log('🛒 Operations:');
-    console.log('  products        - Product management');
-    console.log('  projects        - Project management');
-    console.log('  finance         - Finance & accounting');
-    console.log('  sales           - Sales & CRM');
-    console.log('  purchases       - Purchase & procurement');
-    console.log('  manufacturing   - Manufacturing');
-    console.log('');
-    console.log('💡 Usage: node tenzai-cli.js [command]');
-    console.log('💡 Example: node tenzai-cli.js status');
-    console.log('');
-  }
+      case 'crud':
+        console.log('📦 Testing Advanced CRUD operations...');
+        await toolkit.testAdvancedCRUD();
+        break;
 
-  // 📚 Help & Documentation
-  showHelp() {
-    console.log('📚 TENZAI Purchasing System - Help & Documentation');
-    console.log('='.repeat(60));
-    console.log('');
-    console.log('🎯 ABOUT:');
-    console.log('  TENZAI Purchasing System is a comprehensive ERP solution');
-    console.log('  built on Odoo 18.0, designed for restaurant and food service');
-    console.log('  businesses with advanced purchasing and inventory management.');
-    console.log('');
-    console.log('📦 FEATURES:');
-    console.log('  • Finance & Accounting Management');
-    console.log('  • Sales & CRM Operations');
-    console.log('  • Purchase & Procurement Automation');
-    console.log('  • Manufacturing & Production Control');
-    console.log('  • Project & Task Management');
-    console.log('  • Inventory & Product Management');
-    console.log('  • Multi-Company Support');
-    console.log('  • User & Access Rights Management');
-    console.log('');
-    console.log('🔗 RESOURCES:');
-    console.log('  • Odoo Documentation: https://www.odoo.com/documentation/18.0/');
-    console.log('  • TENZAI Roadmap: ROADMAP_RESTAURANT_NATIONAL.md');
-    console.log('  • Tools Reference: ALL_1_TOOLS.md');
-    console.log('  • Coding Guidelines: prompts/10coding');
-    console.log('');
-    console.log('🛠️ TECHNICAL:');
-    console.log('  • Framework: Odoo 18.0');
-    console.log('  • API: JSON-RPC');
-    console.log('  • Database: PostgreSQL');
-    console.log('  • Authentication: Session-based');
-    console.log('');
-  }
+      case 'validation':
+        console.log('🔍 Testing Field Validation...');
+        await toolkit.testFieldValidation();
+        break;
 
-  // 🎮 Interactive Menu
-  async showInteractiveMenu() {
-    this.showBanner();
-    this.showMainMenu();
+      case 'performance':
+        console.log('📊 Testing Performance...');
+        await toolkit.testPerformance();
+        break;
 
-    return new Promise((resolve) => {
-      this.rl.question('Enter your choice (0-14): ', async (choice) => {
-        console.log('');
-        
-        switch (choice.trim()) {
-          case '0':
-            console.log('👋 Goodbye! Thank you for using TENZAI Purchasing System.');
-            this.rl.close();
-            resolve();
-            break;
-            
-          case '1':
-            await this.runCommand('status');
-            break;
-            
-          case '2':
-            await this.runCommand('full-check');
-            break;
-            
-          case '3':
-            await this.runCommand('cleanup');
-            break;
-            
-          case '4':
-            await this.runCommand('companies');
-            break;
-            
-          case '5':
-            await this.runCommand('users');
-            break;
-            
-          case '6':
-            await this.runCommand('modules');
-            break;
-            
-          case '7':
-            await this.runCommand('products');
-            break;
-            
-          case '8':
-            await this.runCommand('projects');
-            break;
-            
-          case '9':
-            await this.runCommand('finance');
-            break;
-            
-          case '10':
-            await this.runCommand('sales');
-            break;
-            
-          case '11':
-            await this.runCommand('purchases');
-            break;
-            
-          case '12':
-            await this.runCommand('manufacturing');
-            break;
-            
-          case '13':
-            this.showQuickCommands();
-            break;
-            
-          case '14':
-            this.showHelp();
-            break;
-            
-          default:
-            console.log('❌ Invalid choice. Please try again.');
-            break;
+      case 'permissions':
+        console.log('🔐 Managing Permissions...');
+        await toolkit.managePermissions();
+        break;
+
+      case 'user-roles':
+        console.log('👤 Managing User Roles...');
+        await toolkit.manageUserRoles();
+        break;
+
+      case 'create-groups':
+        console.log('🔒 Creating TENZAI User Groups...');
+        await toolkit.createTenzaiUserGroups();
+        break;
+
+      case 'assign-user':
+        if (options.length < 2) {
+          console.log('❌ Usage: assign-user <userId> <groupName>');
+          console.log('Example: assign-user 1 "TENZAI Admin"');
+          return;
         }
-        
-        if (choice.trim() !== '0') {
-          console.log('\n' + '='.repeat(60));
-          this.rl.question('Press Enter to continue...', () => {
-            this.showInteractiveMenu().then(resolve);
-          });
-        }
-      });
-    });
-  }
+        console.log(`🔐 Assigning user ${options[0]} to ${options[1]}...`);
+        await toolkit.assignUserToTenzaiGroup(parseInt(options[0]), options[1]);
+        break;
 
-  // 🚀 Direct Command Execution
-  async executeDirectCommand(command) {
-    this.showBanner();
-    console.log(`🚀 Direct Command Execution: ${command}`);
-    console.log('='.repeat(60));
-    
-    const result = await this.runCommand(command);
-    
-    if (result) {
-      console.log('\n✅ Command executed successfully!');
-    } else {
-      console.log('\n❌ Command execution failed!');
-      process.exit(1);
-    }
-  }
+      case 'create-demo-users':
+        console.log('👥 Creating TENZAI Demo Users...');
+        await toolkit.createTenzaiDemoUsers();
+        break;
 
-  // 🎯 Main Entry Point
-  async run() {
-    const args = process.argv.slice(2);
-    
-    if (args.length === 0) {
-      // Interactive mode
-      await this.showInteractiveMenu();
-    } else {
-      // Direct command mode
-      const command = args[0];
-      await this.executeDirectCommand(command);
+      case 'setup-tenzai-system':
+        console.log('🔐 Setting up Complete TENZAI System...');
+        await toolkit.setupCompleteTenzaiSystem();
+        break;
+
+      case 'full-test':
+        console.log('🚀 Running Full Test Suite...');
+        await runFullTestSuite(toolkit);
+        break;
+
+      case 'help':
+        showHelp();
+        break;
+
+      default:
+        console.log(`❌ Unknown command: ${command}`);
+        showHelp();
+        break;
     }
+
+    console.log('\n✅ Command completed successfully!');
+
+  } catch (error) {
+    console.error('❌ Command failed:', error.message);
+    process.exit(1);
   }
 }
 
-// 🚀 Start CLI
+async function runFullTestSuite(toolkit) {
+  console.log('🧪 TENZAI Full Test Suite');
+  console.log('='.repeat(60));
+
+  const results = {};
+
+  // 1. System Status
+  console.log('1️⃣ Checking System Status...');
+  results.status = await toolkit.getSystemStatus();
+
+  // 2. Advanced CRUD
+  console.log('\n2️⃣ Testing Advanced CRUD...');
+  results.crud = await toolkit.testAdvancedCRUD();
+
+  // 3. Field Validation
+  console.log('\n3️⃣ Testing Field Validation...');
+  results.validation = await toolkit.testFieldValidation();
+
+  // 4. Performance
+  console.log('\n4️⃣ Testing Performance...');
+  results.performance = await toolkit.testPerformance();
+
+  // 5. Permissions
+  console.log('\n5️⃣ Testing Permissions...');
+  results.permissions = await toolkit.managePermissions();
+
+  // 6. User Roles
+  console.log('\n6️⃣ Testing User Roles...');
+  results.userRoles = await toolkit.manageUserRoles();
+
+  // 7. Create TENZAI Groups
+  console.log('\n7️⃣ Creating TENZAI Groups...');
+  results.tenzaiGroups = await toolkit.createTenzaiUserGroups();
+
+  // Print Summary
+  console.log('\n📋 Full Test Suite Results');
+  console.log('='.repeat(60));
+  
+  console.log('✅ System Status:', results.status ? 'ONLINE' : 'OFFLINE');
+  console.log('✅ Advanced CRUD:', results.crud?.productCRUD ? 'PASSED' : 'FAILED');
+  console.log('✅ Field Validation:', results.validation?.requiredFields ? 'PASSED' : 'FAILED');
+  console.log('✅ Performance:', results.performance?.summary ? 'PASSED' : 'FAILED');
+  console.log('✅ Permissions:', results.permissions?.groups ? 'PASSED' : 'FAILED');
+  console.log('✅ User Roles:', results.userRoles?.users ? 'PASSED' : 'FAILED');
+  console.log('✅ TENZAI Groups:', results.tenzaiGroups?.length ? 'CREATED' : 'FAILED');
+
+  console.log('\n🎉 Full test suite completed!');
+}
+
+function showHelp() {
+  console.log('📋 Available Commands:');
+  console.log('');
+  console.log('🔍 System Commands:');
+  console.log('  status          - ตรวจสอบสถานะระบบ');
+  console.log('  test            - ทดสอบการเชื่อมต่อพื้นฐาน');
+  console.log('  full-test       - ทดสอบทั้งหมด');
+  console.log('');
+  console.log('🧪 Testing Commands:');
+  console.log('  crud            - ทดสอบ Advanced CRUD operations');
+  console.log('  validation      - ทดสอบ Field Validation');
+  console.log('  performance     - ทดสอบ Performance');
+  console.log('');
+  console.log('🔐 Permission Commands:');
+  console.log('  permissions     - จัดการสิทธิ์และ access rights');
+  console.log('  user-roles      - จัดการ user roles');
+  console.log('  create-groups   - สร้าง TENZAI user groups');
+  console.log('  assign-user     - กำหนดสิทธิ์ให้ user (userId groupName)');
+  console.log('');
+  console.log('👥 Demo Users:');
+  console.log('  create-demo-users - สร้าง user ตัวอย่างทุกแผนก');
+  console.log('  setup-tenzai-system - setup ระบบ TENZAI เต็มรูปแบบ');
+  console.log('');
+  console.log('❓ Help:');
+  console.log('  help            - แสดงคำสั่งทั้งหมด');
+  console.log('');
+  console.log('📝 Examples:');
+  console.log('  node tenzai-cli.js status');
+  console.log('  node tenzai-cli.js crud');
+  console.log('  node tenzai-cli.js assign-user 1 "TENZAI Admin"');
+  console.log('  node tenzai-cli.js create-demo-users');
+  console.log('  node tenzai-cli.js setup-tenzai-system');
+  console.log('  node tenzai-cli.js full-test');
+}
+
+// Run CLI if this file is executed directly
 if (require.main === module) {
-  const cli = new TenzaiCLI();
-  cli.run().catch(error => {
-    console.error('❌ CLI Error:', error.message);
+  runCLI().catch(error => {
+    console.error('❌ Fatal error:', error.message);
     process.exit(1);
   });
 }
 
-module.exports = TenzaiCLI; 
+module.exports = { runCLI, showHelp }; 
