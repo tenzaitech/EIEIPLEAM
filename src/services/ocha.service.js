@@ -647,6 +647,26 @@ class OchaService {
   async deleteSupplier(id) {
     return await this.supabase.delete('suppliers', id);
   }
+
+  // 📦 Inventory Items Management
+  async getInventoryItems(filters = {}) {
+    return await this.supabase.select('inventory_items', filters, [
+      'id', 'product_id', 'location_id', 'quantity', 'unit_price', 
+      'expiry_date', 'batch_number', 'notes', 'created_at', 'updated_at'
+    ]);
+  }
+
+  async createInventoryItem(itemData) {
+    return await this.supabase.insert('inventory_items', itemData);
+  }
+
+  async updateInventoryItem(id, data) {
+    return await this.supabase.update('inventory_items', id, data);
+  }
+
+  async deleteInventoryItem(id) {
+    return await this.supabase.delete('inventory_items', id);
+  }
 }
 
 module.exports = OchaService; 

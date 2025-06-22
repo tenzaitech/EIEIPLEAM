@@ -13,6 +13,9 @@ const odooRoutes = require('./src/routes/odoo.routes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Initialize Master Toolkit
+const toolkit = new TenzaiMasterToolkit();
+
 // Security middleware
 app.use(helmet());
 
@@ -33,9 +36,6 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Initialize Master Toolkit
-const toolkit = new TenzaiMasterToolkit();
 
 // API Routes
 app.use('/api/odoo', odooRoutes);
@@ -266,14 +266,102 @@ app.get('/api/reports/processing', async (req, res) => {
   }
 });
 
+// Inventory API
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const inventory = await toolkit.getOchaInventory();
+    res.json(inventory);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/inventory', async (req, res) => {
+  try {
+    const result = await toolkit.createOchaInventoryItem(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/inventory/:id', async (req, res) => {
+  try {
+    const result = await toolkit.updateOchaInventoryItem(req.params.id, req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Storage API
+app.get('/api/storage', async (req, res) => {
+  try {
+    const storage = await toolkit.getOchaStorages();
+    res.json(storage);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/storage', async (req, res) => {
+  try {
+    const result = await toolkit.createOchaStorage(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Processing API
+app.get('/api/processing', async (req, res) => {
+  try {
+    const processing = await toolkit.getOchaProcessings();
+    res.json(processing);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/processing', async (req, res) => {
+  try {
+    const result = await toolkit.createOchaProcessing(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Transportation API
+app.get('/api/transportation', async (req, res) => {
+  try {
+    const transportation = await toolkit.getOchaTransportations();
+    res.json(transportation);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/transportation', async (req, res) => {
+  try {
+    const result = await toolkit.createOchaTransportation(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Serve static files from React frontend
+app.use(express.static(path.join(__dirname, 'project', 'dist')));
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
-    message: '🎉 Odoo Express Connector API',
-    version: '1.0.0',
-    description: 'API สำหรับเชื่อมต่อกับระบบ Odoo ERP',
+    message: '🎉 TENZAI Purchasing System API',
+    version: '2.5.0',
+    description: 'API สำหรับระบบจัดการการจัดซื้อ TENZAI',
     endpoints: {
-      health: '/health',
+      health: '/api/health',
       odoo: {
         test: '/api/odoo/test',
         partners: '/api/odoo/partners',
@@ -283,10 +371,16 @@ app.get('/', (req, res) => {
         create: '/api/odoo/create',
         update: '/api/odoo/update/:model/:id',
         logout: '/api/odoo/logout'
-      }
+      },
+      frontend: 'Frontend is served from / (React app)'
     },
     documentation: 'ดูเอกสารเพิ่มเติมได้ที่ /docs'
   });
+});
+
+// Fallback for SPA (React Router) - ต้องอยู่หลัง API routes ทั้งหมด
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'project', 'dist', 'index.html'));
 });
 
 // Error handling middleware
@@ -300,20 +394,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'ไม่พบ endpoint ที่ระบุ',
-    path: req.originalUrl
-  });
-});
-
 // Start server
 app.listen(PORT, () => {
   console.log('🚀 Server is running...');
   console.log(`📍 Server URL: http://localhost:${PORT}`);
-  console.log(`🔗 Health Check: http://localhost:${PORT}/health`);
+  console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
   console.log(`🔗 Odoo Test: http://localhost:${PORT}/api/odoo/test`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Database: ${process.env.ODOO_DATABASE || 'tenzaitech'}`);
