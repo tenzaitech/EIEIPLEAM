@@ -37,6 +37,9 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve static files from React frontend (for Vercel)
+app.use(express.static(path.join(__dirname, 'project', 'dist')));
+
 // API Routes
 app.use('/api/odoo', odooRoutes);
 
@@ -350,9 +353,6 @@ app.post('/api/transportation', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// Serve static files from React frontend
-app.use(express.static(path.join(__dirname, 'project', 'dist')));
 
 // Root endpoint
 app.get('/', (req, res) => {
