@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Eye, EyeOff, ChefHat, Lock, Mail, Globe } from 'lucide-react';
+import { Eye, EyeOff, ChefHat, Lock, Mail } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from '../components/LanguageSelector';
@@ -28,7 +28,7 @@ export default function Login() {
       if (!success) {
         setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
       }
-    } catch (err) {
+    } catch {
       setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsLoading(false);

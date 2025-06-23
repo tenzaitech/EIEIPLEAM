@@ -8,6 +8,8 @@ const languages = [
   { code: 'my', name: 'မြန်မာ', flag: '🇲🇲' },
 ];
 
+type LanguageCode = 'th' | 'en' | 'my';
+
 export default function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -32,7 +34,7 @@ export default function LanguageSelector() {
             <button
               key={lang.code}
               onClick={() => {
-                setLanguage(lang.code as any);
+                setLanguage(lang.code as LanguageCode);
                 setIsOpen(false);
               }}
               className="flex items-center justify-between w-full px-4 py-2 text-left text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"

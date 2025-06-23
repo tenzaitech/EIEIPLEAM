@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Database } from '../types/database';
 
@@ -9,7 +9,7 @@ export function useSupabaseQuery<T extends TableName>(
   table: T,
   options?: {
     select?: string;
-    filter?: Record<string, any>;
+    filter?: Record<string, unknown>;
     orderBy?: { column: string; ascending?: boolean };
     limit?: number;
   }
@@ -18,43 +18,43 @@ export function useSupabaseQuery<T extends TableName>(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true);
-        let query = supabase.from(table).select(options?.select || '*');
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      let query = supabase.from(table).select(options?.select || '*');
 
-        if (options?.filter) {
-          Object.entries(options.filter).forEach(([key, value]) => {
-            query = query.eq(key, value);
-          });
-        }
-
-        if (options?.orderBy) {
-          query = query.order(options.orderBy.column, { 
-            ascending: options.orderBy.ascending ?? true 
-          });
-        }
-
-        if (options?.limit) {
-          query = query.limit(options.limit);
-        }
-
-        const { data: result, error } = await query;
-
-        if (error) throw error;
-        setData(result || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
+      if (options?.filter) {
+        Object.entries(options.filter).forEach(([key, value]) => {
+          query = query.eq(key, value);
+        });
       }
+
+      if (options?.orderBy) {
+        query = query.order(options.orderBy.column, { 
+          ascending: options.orderBy.ascending ?? true 
+        });
+      }
+
+      if (options?.limit) {
+        query = query.limit(options.limit);
+      }
+
+      const { data: result, error } = await query;
+
+      if (error) throw error;
+      setData(result || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
     }
+  }, [table, options?.select, options?.filter, options?.orderBy, options?.limit]);
 
+  useEffect(() => {
     fetchData();
-  }, [table, JSON.stringify(options)]);
+  }, [fetchData]);
 
-  return { data, loading, error, refetch: () => fetchData() };
+  return { data, loading, error, refetch: fetchData };
 }
 
 export function useSupabaseMutation<T extends TableName>(table: T) {

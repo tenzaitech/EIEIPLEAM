@@ -3,7 +3,6 @@ import { Truck, MapPin, Clock, Package, Route, Calendar, Filter, Search } from '
 
 export default function Transportation() {
   const [selectedView, setSelectedView] = useState<'calendar' | 'list'>('calendar');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   const shipments = [
     {
@@ -279,7 +278,6 @@ export default function Transportation() {
                 className={`min-h-[100px] p-2 border border-neutral-100 rounded-lg ${
                   day?.isToday ? 'bg-primary-50 border-primary-200' : 'hover:bg-neutral-50'
                 } ${day ? 'cursor-pointer' : ''}`}
-                onClick={() => day && setSelectedDate(day.dateString)}
               >
                 {day && (
                   <>

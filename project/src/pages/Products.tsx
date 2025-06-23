@@ -3,6 +3,7 @@ import { Plus, Search, Filter, Edit, Trash2, Package, AlertTriangle } from 'luci
 import { useSupabaseQuery, useSupabaseMutation } from '../hooks/useSupabase';
 import { useLanguage } from '../contexts/LanguageContext';
 import type { Product } from '../types';
+import type { Database } from '../types/supabase';
 
 export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,7 +25,7 @@ export default function Products() {
     return matchesSearch && matchesType;
   });
 
-  const getStockStatus = (product: any) => {
+  const getStockStatus = (product: Database['public']['Tables']['products']['Row']) => {
     if (product.current_stock <= product.minimum_stock) {
       return { status: t('status.low-stock'), color: 'text-error-600 bg-error-50' };
     } else if (product.current_stock >= product.maximum_stock) {
@@ -51,7 +52,7 @@ export default function Products() {
     }
   };
 
-  const handleSubmit = async (formData: any) => {
+  const handleSubmit = async (formData: Database['public']['Tables']['products']['Insert']) => {
     try {
       if (editingProduct) {
         await update(editingProduct.id, formData);
@@ -308,7 +309,7 @@ function ProductForm({
   onClose 
 }: { 
   product: Product | null; 
-  onSubmit: (data: any) => void; 
+  onSubmit: (data: Database['public']['Tables']['products']['Insert']) => void; 
   onClose: () => void; 
 }) {
   const { t } = useLanguage();
@@ -316,7 +317,7 @@ function ProductForm({
     name: product?.name || '',
     code: product?.code || '',
     description: product?.description || '',
-    type: product?.type || 'raw_material',
+    type: product?.type || 'raw_material' as const,
     unit_of_measure: product?.unit_of_measure || 'kg',
     list_price: product?.list_price || 0,
     cost_price: product?.cost_price || 0,
@@ -392,7 +393,7 @@ function ProductForm({
               <select
                 required
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'raw_material' | 'finished_product' | 'service' })}
                 className="w-full px-4 py-3 border border-neutral-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
               >
                 <option value="raw_material">วัตถุดิบ</option>
