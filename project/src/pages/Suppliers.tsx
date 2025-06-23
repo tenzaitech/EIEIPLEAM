@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Plus, Search, Filter, Edit, Trash2, Users, Star, Phone, Mail } from 'lucide-react';
 import { useSupabaseQuery, useSupabaseMutation } from '../hooks/useSupabase';
 import type { Supplier } from '../types';
-import type { Database } from '../types/database';
 
 export default function Suppliers() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -10,22 +9,24 @@ export default function Suppliers() {
   const [showForm, setShowForm] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
 
-  const { data: suppliers, loading, refetch } = useSupabaseQuery('suppliers');
+  const { data: suppliers, loading, refetch } = useSupabaseQuery('suppliers', {
+    orderBy: { column: 'name', ascending: true }
+  });
+
   const { insert, update, remove } = useSupabaseMutation('suppliers');
 
   const filteredSuppliers = suppliers.filter(supplier => {
     const matchesSearch = supplier.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         supplier.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         supplier.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+                         (supplier.email && supplier.email.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesRank = rankFilter === 'all' || supplier.supplier_rank === rankFilter;
     return matchesSearch && matchesRank;
   });
 
   const getRankColor = (rank: string) => {
     switch (rank) {
-      case 'A': return 'text-primary-600 bg-primary-50';
-      case 'B': return 'text-secondary-600 bg-secondary-50';
-      case 'C': return 'text-warning-600 bg-warning-50';
+      case 'A': return 'text-secondary-600 bg-secondary-50';
+      case 'B': return 'text-warning-600 bg-warning-50';
+      case 'C': return 'text-error-600 bg-error-50';
       default: return 'text-neutral-600 bg-neutral-50';
     }
   };
@@ -37,7 +38,7 @@ export default function Suppliers() {
     ));
   };
 
-  const handleSubmit = async (formData: Database['public']['Tables']['suppliers']['Insert']) => {
+  const handleSubmit = async (formData: any) => {
     try {
       if (editingSupplier) {
         await update(editingSupplier.id, formData);
@@ -286,7 +287,7 @@ function SupplierForm({
   onClose 
 }: { 
   supplier: Supplier | null; 
-  onSubmit: (data: Database['public']['Tables']['suppliers']['Insert']) => void; 
+  onSubmit: (data: any) => void; 
   onClose: () => void; 
 }) {
   const [formData, setFormData] = useState({
@@ -297,7 +298,7 @@ function SupplierForm({
     city: supplier?.city || '',
     country: supplier?.country || '',
     zip_code: supplier?.zip_code || '',
-    supplier_rank: supplier?.supplier_rank || 'B' as const,
+    supplier_rank: supplier?.supplier_rank || 'B',
     payment_terms: supplier?.payment_terms || '',
     active: supplier?.active ?? true,
   });
@@ -414,7 +415,7 @@ function SupplierForm({
               <select
                 required
                 value={formData.supplier_rank}
-                onChange={(e) => setFormData({ ...formData, supplier_rank: e.target.value as 'A' | 'B' | 'C' })}
+                onChange={(e) => setFormData({ ...formData, supplier_rank: e.target.value as any })}
                 className="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               >
                 <option value="A">A-Rank (Premium)</option>

@@ -28,7 +28,7 @@ export default function Login() {
       if (!success) {
         setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
       }
-    } catch {
+    } catch (err) {
       setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
     } finally {
       setIsLoading(false);
