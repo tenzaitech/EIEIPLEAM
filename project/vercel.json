@@ -22,13 +22,5 @@
       "src": "/(.*)",
       "dest": "/index.html"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "backend-api/server.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 } 
