@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Package,
-  ChefHat
+  ChefHat,
+  Settings
 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -35,6 +36,7 @@ const navigationItems = [
   { name: 'nav.processing', href: '/processing', icon: ChefHat, roles: ['admin', 'processing', 'warehouse'] },
   { name: 'nav.transportation', href: '/transportation', icon: Truck, roles: ['admin', 'transport', 'warehouse'] },
   { name: 'nav.reports', href: '/reports', icon: PieChart, roles: ['admin', 'purchasing'] },
+  { name: 'nav.system-status', href: '/system-status', icon: Settings, roles: ['admin'] },
 ];
 
 export default function Sidebar({ isOpen, onToggle, userRole }: SidebarProps) {

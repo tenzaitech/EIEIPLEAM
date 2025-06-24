@@ -13,6 +13,7 @@ import Storage from './pages/Storage';
 import Processing from './pages/Processing';
 import Transportation from './pages/Transportation';
 import Reports from './pages/Reports';
+import SystemStatus from './pages/SystemStatus';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 
@@ -64,6 +65,7 @@ function ProtectedRoute() {
         <Route path="/processing" element={<Processing />} />
         <Route path="/transportation" element={<Transportation />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/system-status" element={<SystemStatus />} />
       </Routes>
     </Layout>
   );

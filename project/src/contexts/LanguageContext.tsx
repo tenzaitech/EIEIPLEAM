@@ -22,6 +22,7 @@ const translations = {
     'nav.processing': 'แปรรูป',
     'nav.transportation': 'ขนส่ง',
     'nav.reports': 'รายงาน',
+    'nav.system-status': 'สถานะระบบ',
     
     // Common
     'common.search': 'ค้นหา',
@@ -144,6 +145,7 @@ const translations = {
     'nav.processing': 'Processing',
     'nav.transportation': 'Transportation',
     'nav.reports': 'Reports',
+    'nav.system-status': 'System Status',
     
     // Common
     'common.search': 'Search',
@@ -266,6 +268,7 @@ const translations = {
     'nav.processing': 'ပြုပြင်ခြင်း',
     'nav.transportation': 'သယ်ယူပို့ဆောင်ရေး',
     'nav.reports': 'အစီရင်ခံစာများ',
+    'nav.system-status': 'စနစ်အခြေအနေ',
     
     // Common
     'common.search': 'ရှာဖွေရန်',
